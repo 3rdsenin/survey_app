@@ -1,7 +1,8 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const authrouter = require("./src/routes/auth.routes");
-const blogrouter = require("./src/routes/blog.routes");
+const surveyrouter = require("./src/routes/survey.routes");
+const questionrouter = require("./src/routes/question.routes");
 const homerouter = require("./src/routes/home.routes");
 
 
@@ -10,7 +11,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/auth', authrouter);
-app.use('/blog', blogrouter);
+app.use('/survey', surveyrouter);
+app.use('/question', questionrouter);
 app.use('/', homerouter);
 
 
