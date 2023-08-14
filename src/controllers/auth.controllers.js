@@ -64,7 +64,7 @@ module.exports.login = async(req, res) => {
 
     } catch (error) {
         return res.status(409).json({ message: "An error occurred" + error.message });
-        console.log(error);
+
     }
 
 };

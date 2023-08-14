@@ -5,7 +5,7 @@ router.post('*', (req, res) => {
 });
 
 router.get('*', (req, res) => {
-    //console.log(req.headers)
+
     res.status(404).send("Not found");
 });
 

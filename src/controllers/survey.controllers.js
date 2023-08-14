@@ -1,4 +1,3 @@
-const router = require('express').Router();
 const surveyModel = require('../models/survey.model');
 const UserModel = require('../models/user.model');
 const questionModel = require('../models/question.model');
