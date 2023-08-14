@@ -114,3 +114,5 @@ Success
 }
 
 All other endpoints documented in postman file included in repo. Please note that you will need to create two variables: "localhost" which maps to base url and "accessToken" which maps to the returned token after login.
+
+Set up environment variables as indicated in example.env file.
