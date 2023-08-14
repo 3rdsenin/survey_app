@@ -310,30 +310,34 @@ module.exports.receiveSurveyResponse = async(req, res) => {
     }
 };
 
-//serve a surveywith responses
+//serve a survey with responses
 module.exports.getSurveyAndResponses = async(req, res) => {
     try {
         let responseObject = [];
         const { id } = req.params;
         const survey = await surveyModel.findById(id);
+        let author = getUserIdFromToken(req.headers.token);
 
         if (!survey) {
             return res.status(404).json({ message: "Sorry , this survey was not found." });
         }
         const user = await UserModel.findById(survey.author);
-        const surveyQuestions = await questionModel.find({ surveyId: survey._id });
-        for (const surveyQuestion of surveyQuestions) {
-            let questionId = surveyQuestion._id;
-            let question = surveyQuestion.content;
-            let type = surveyQuestion.type;
-            let responses = await getReponses(questionId);
+        if (author = survey.author) {
+            const surveyQuestions = await questionModel.find({ surveyId: survey._id });
+            for (const surveyQuestion of surveyQuestions) {
+                let questionId = surveyQuestion._id;
+                let question = surveyQuestion.content;
+                let type = surveyQuestion.type;
+                let responses = await getReponses(questionId);
 
-            let questionObj = { questionId, question, type, responses };
+                let questionObj = { questionId, question, type, responses };
 
-            responseObject.push(questionObj);
+                responseObject.push(questionObj);
+            }
+
+            return res.status(200).json({ "Survey Title": survey.title, "Survey Description": survey.description, "Created by": user.firstname + ' ' + user.lastname, "Questions": responseObject });
         }
 
-        return res.status(200).json({ "Survey Title": survey.title, "Survey Description": survey.description, "Created by": user.firstname + ' ' + user.lastname, "Questions": responseObject });
     } catch (err) {
         return res.status(404).json({ message: err.message });
     }
