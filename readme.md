@@ -84,9 +84,9 @@ Success
 {
     "message": "Successfully created user",
     "user": {
-        "firstname": "Paul",
-        "lastname": "Solomon",
-        "email": "paul@any3.com",
+        "firstname": "John",
+        "lastname": "Doe",
+        "email": "doe@example.com",
         "password": "$2b$10$kCJcMeER4Yh7nTANdwPdhui/KyQnAOAtaCpRlZkH1gNyKWICuqZ7i",
         "_id": "63658c6ba2de6ffc5de61a3b",
         "__v": 0
@@ -113,6 +113,6 @@ Success
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiI2MzY1ODE4MDU0ZTBhZDZjMGJiNDdmOTEiLCJlbWFpbCI6InBhdWxAYW55Mi5jb20iLCJmaXJzdG5hbWUiOiJQYXVsIiwibGFzdG5hbWUiOiJTb2xvbW9uIiwiaWF0IjoxNjY3NTk5NTY4LCJleHAiOjE2Njc2MDY3Njh9.7V9dSTVCVlUmyLrmc_2FPLTYnfWrPM5b1X1LGT-WrBc"
 }
 
-All other endpoints documented in postman file included in repo. Please note that you will need to create two variables: "localhost" which maps to base url and "accessToken" which maps to the returned token after login.
+All other endpoints are documented in postman file included in repo. Please note that you will need to create two variables: "localhost" which maps to base url and "accessToken" which maps to the returned token after login.
 
 Set up environment variables as indicated in example.env file.
