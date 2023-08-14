@@ -1,10 +1,14 @@
 const router = require('express').Router();
 const surveyModel = require('../models/survey.model');
 const UserModel = require('../models/user.model');
+const questionModel = require('../models/question.model');
+const responseModel = require('../models/responses.model');
 const moment = require('moment');
-const { getUserIdFromToken } = require('../services/blog.services')
+const { getUserIdFromToken } = require('../services/survey.services')
 
-
+const getReponses = async(questionId) => {
+    return await responseModel.find({ questionId })
+}
 
 //create survey
 module.exports.createSurvey = async(req, res) => {
@@ -244,4 +248,94 @@ module.exports.getUserSurveys = async(req, res) => {
     }
 
     return res.status(200).json({ survey: survey });
+};
+
+//serve a survey:
+module.exports.serveSurvey = async(req, res) => {
+    try {
+        let responseObject = [];
+        const { id } = req.params;
+        const survey = await surveyModel.findById(id);
+
+        if (!survey) {
+            return res.status(404).json({ message: "Sorry , this survey was not found." });
+        }
+        const user = await UserModel.findById(survey.author);
+        const surveyQuestions = await questionModel.find({ surveyId: survey._id });
+
+        surveyQuestions.forEach(surveyQuestion => {
+            let questionId = surveyQuestion._id;
+            let question = surveyQuestion.content;
+            let type = surveyQuestion.type;
+            let response = [];
+
+            let questionObj = { questionId, question, type, response }
+
+            responseObject.push(questionObj);
+        })
+
+        return res.status(200).json({ "Survey Title": survey.title, "Survey Description": survey.description, "Created by": user.firstname + ' ' + user.lastname, "Questions": responseObject });
+    } catch (err) {
+        return res.status(404).json({ message: err.message });
+    }
+};
+
+//serve a survey:
+module.exports.receiveSurveyResponse = async(req, res) => {
+
+    let body = req.body;
+    let responses = body.response
+    let mydata = [];
+    if (!responses) {
+        return res.status(404).json({ message: "No response recieved, please follow response format" });
+    }
+    try {
+        responses.forEach(async(response) => {
+
+            const payload = {
+                timestamp: moment().toDate(),
+                questionId: response.questionId,
+                response: response.response
+            }
+            mydata.push(payload);
+        })
+
+        responseModel.insertMany(mydata).then(function(docs) {
+            return res.status(200).json({ message: "Response recorded" });
+        }).catch(function(error) {
+            return res.status(404).json({ message: error.message });
+        })
+
+    } catch (err) {
+        return res.status(404).json({ message: err.message });
+    }
+};
+
+//serve a surveywith responses
+module.exports.getSurveyAndResponses = async(req, res) => {
+    try {
+        let responseObject = [];
+        const { id } = req.params;
+        const survey = await surveyModel.findById(id);
+
+        if (!survey) {
+            return res.status(404).json({ message: "Sorry , this survey was not found." });
+        }
+        const user = await UserModel.findById(survey.author);
+        const surveyQuestions = await questionModel.find({ surveyId: survey._id });
+        for (const surveyQuestion of surveyQuestions) {
+            let questionId = surveyQuestion._id;
+            let question = surveyQuestion.content;
+            let type = surveyQuestion.type;
+            let responses = await getReponses(questionId);
+
+            let questionObj = { questionId, question, type, responses };
+
+            responseObject.push(questionObj);
+        }
+
+        return res.status(200).json({ "Survey Title": survey.title, "Survey Description": survey.description, "Created by": user.firstname + ' ' + user.lastname, "Questions": responseObject });
+    } catch (err) {
+        return res.status(404).json({ message: err.message });
+    }
 };

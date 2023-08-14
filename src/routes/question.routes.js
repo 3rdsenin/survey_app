@@ -6,14 +6,16 @@ const { isAuthorized } = require('../services/survey.services')
 //create question
 router.post('/create', isAuthorized, questionController.createQuestion);
 
-// //update particular question 
+// //update/edit particular question 
 router.patch('/editQuestion/:id', isAuthorized, questionController.updateQuestion);
 
 //delete particular question
 router.delete('/deleteQuestion/:id', isAuthorized, questionController.deleteQuestion);
 
 //get questions
-router.get('/userSurveys', isAuthorized, questionController.getQuestions);
+router.get('/survey/:id', questionController.getSurveyQuestions);
+
+
 
 
 module.exports = router;

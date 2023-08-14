@@ -1,8 +1,7 @@
 const router = require('express').Router();
 const questionModel = require('../models/question.model');
-const UserModel = require('../models/user.model');
 const moment = require('moment');
-const { getWordCount, getTags, getUserIdFromToken } = require('../services/blog.services')
+const { getUserIdFromToken } = require('../services/survey.services')
 
 
 
@@ -50,7 +49,7 @@ module.exports.createQuestion = async(req, res) => {
     }
 
 };
-//get all questions for survey by id
+//get all questions for survey by surveyid
 module.exports.getSurveyQuestions = async(req, res) => {
     const { id } = req.params;
     const questions = await questionModel.find({ surveyId: id })
@@ -65,8 +64,6 @@ module.exports.getSurveyQuestions = async(req, res) => {
     }
 
 };
-
-
 //update a question
 module.exports.updateQuestion = async(req, res) => {
     try {
@@ -134,37 +131,4 @@ module.exports.deleteQuestion = async(req, res) => {
         return res.json({ status: false, message: "Unauthorized to perform operation" })
     }
 
-};
-
-module.exports.getUserPosts = async(req, res) => {
-    const {
-        page,
-        posts,
-        state,
-        order
-    } = req.query;
-    const searchQuery = {};
-
-    //Pagination
-    const startpage = (!page ? 0 : page);
-    const postsPerPage = (!posts ? 10 : posts);
-    const sortOrder = (!order ? "asc" : order);
-    const stateParam = (!state ? "draft" : state);
-
-    //Searching
-    searchQuery.author = getUserIdFromToken(req.headers.token);
-    searchQuery.state = stateParam;
-
-
-    //Sorting
-
-    const blog = await BlogModel.find(searchQuery)
-        .sort(sortOrder)
-        .skip(startpage)
-        .limit(postsPerPage);
-    if (!blog) {
-        return res.status(404).json({ status: false, message: "This user does not have any posts" })
-    }
-
-    return res.status(200).json({ blog: blog });
 };

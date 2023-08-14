@@ -5,12 +5,12 @@ const ObjectId = Schema.ObjectId;
 const ResponseSchema = new Schema({
     id: ObjectId,
     timestamp: { type: Date },
-    question: { type: String, required: [true, ''] },
+    questionId: { type: String, required: [true, ''] },
     response: [],
-    author: { type: String, required: [true, 'Response must have a author'] }
+
 
 
 });
 
-const Response = mongoose.model('BlogPost', ResponseSchema);
+const Response = mongoose.model('Response', ResponseSchema);
 module.exports = Response;
